@@ -72,6 +72,10 @@ const actions = {
         commit('SET_ROLES', roles)
         commit('SET_NAME', username)
         // 这个头像地址正常在生产环境用nginx的时候，会指定静态文件路径，到时候可能替换
+        // 下面用正则做替换
+        let reg = /^http(s)?:\/\/(.*?)\//
+        var ToReplace = process.env.VUE_APP_BASE_API + '/'
+        avatar = avatar.replace(reg, ToReplace)
         commit('SET_AVATAR', avatar)
         commit('SET_SUPERUSER', is_superuser)
         resolve(data)
