@@ -39,6 +39,11 @@
                 :titles="['Minion ID选择', '已选Minion ID']"
                 v-model="exeData.minion_list"
                 :data="minion_list">
+                <span slot-scope="{ option }">
+                  <el-tooltip class="item" effect="light" :content="option.label" placement="right">
+                    <span>{{ option.label }}</span>
+                  </el-tooltip>
+                </span>
               </el-transfer>
               <div class="dataTransfer_error" v-show="transfer_error">
                 请至少选择一个Minion ID

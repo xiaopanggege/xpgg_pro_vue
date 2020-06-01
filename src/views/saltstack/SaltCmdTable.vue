@@ -82,6 +82,11 @@
             v-model="temp.minion_list"
             :data="minion_list"
             target-order='push'>
+            <span slot-scope="{ option }">
+              <el-tooltip class="item" effect="light" :content="option.label" placement="right">
+                <span>{{ option.label }}</span>
+              </el-tooltip>
+            </span>
           </el-transfer>
         </el-form-item>
       </el-form>
