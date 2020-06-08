@@ -746,8 +746,8 @@ export default {
         }
         // operation_arguments是后端逻辑处理后的参数不需要前端传递，默认传递空的字符串，这里转换成对象了如果传递对象反而会造成后端验证报错
         data.operation_arguments = '';
-        console.log(row);
-        console.log(data);
+        // console.log(row);
+        // console.log(data);
         this.appData = data;
         // v-model无法接受布尔类型所以得转换一下下面的检出状态
         this.appData.co_status = this.appData.co_status?'已检出':'未检出';
