@@ -78,7 +78,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :page_size.sync="listQuery.page_size" @pagination="getList" />
 
-    <el-dialog class="AppForm"  :title="dialogAppFormTitle" width="1220px" :visible.sync="dialogAppFormVisible"  :close-on-press-escape="false" :close-on-click-modal="false" :show-close="false">
+    <el-dialog class="AppForm"  :title="dialogAppFormTitle" width="1220px" :visible.sync="dialogAppFormVisible"  :close-on-press-escape="false" :close-on-click-modal="false">
       
       <div class="overflow_set">
         <el-form ref="appDataForm" :rules="rules"  :model="appData" label-position="right" label-width="130px" style="width: 1175px; margin:0;">
