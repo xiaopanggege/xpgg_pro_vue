@@ -902,29 +902,40 @@ export default {
           this.operation_transfer_error = ''
           this.minion_transfer_error = ''
           this.app_name_error = ''
-          this.updateLoading = true
-          releaseUpdate(data).then(response => {
-            if(response.data.status){
-              this.updateLoading = false
-              this.dialogAppFormVisible = false
-              Message.success(response.data.results)
-              this.getList()
-            }
-            else{
-              this.updateLoading = false
-              let result_data = response.data.results
-              console.log(JSON.stringify(result_data));
-              if(Object.prototype.toString.call(result_data) === '[object Object]'){
-                for (let k in result_data){
-                  this[`${k}_error`] = result_data[k][0]
-                }
-              }else{
-                Message.error(response.data.results)
+          this.$confirm('确定要更新当前应用?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.updateLoading = true
+            releaseUpdate(data).then(response => {
+              if(response.data.status){
+                this.updateLoading = false
+                this.dialogAppFormVisible = false
+                Message.success(response.data.results)
+                this.getList()
               }
-            }
-          }).catch(error => {
-            this.updateLoading = false
-          })
+              else{
+                this.updateLoading = false
+                let result_data = response.data.results
+                console.log(JSON.stringify(result_data));
+                if(Object.prototype.toString.call(result_data) === '[object Object]'){
+                  for (let k in result_data){
+                    this[`${k}_error`] = result_data[k][0]
+                  }
+                }else{
+                  Message.error(response.data.results)
+                }
+              }
+            }).catch(error => {
+              this.updateLoading = false
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消更新'
+            });          
+          });
         } else{
           return false
         }
