@@ -26,7 +26,7 @@
         <el-col :span="12">
               <div class="editor-div">
                 <el-row style="margin:3px 0;" >
-                  <el-input v-model="open_file_path" :disabled="true" style="width: 250px;" size="mini"></el-input>
+                  <el-input v-model="open_file_path" readonly style="width: 250px;" size="mini"></el-input>
                   <el-button type="primary" size="mini" style="margin-left:2px;" @click="handUpdateFile" :loading="fileUpdateLoading">更新</el-button>
                   <div style="float:right;">
                     <span style="font-size:14px;">语法样式：</span>

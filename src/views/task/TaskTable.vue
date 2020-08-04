@@ -72,12 +72,10 @@
               <el-form-item label="任务名称：" prop="name" :error="name_error">
                 <el-input v-model="task.name" style="width:260px;" ref="task_name_focus"></el-input>
               </el-form-item>
-              <el-form-item label="任务类型：" prop="task">
-                <el-select v-model="task.task" >
-                  <el-option label="命令" value="命令"></el-option>
-                  <el-option label="脚本" value="脚本"></el-option>
-                </el-select>
-                <span v-show="task.task=='脚本'" style="font-weight: normal;color: #3FB8AF;font-size: 13px;text-align: left;padding: 7px 7px">提示：脚本还在开发中...</span>
+              <el-form-item label="任务命令：" prop="task">
+                <el-radio-group v-model="task.task">
+                  <el-radio label="命令" >Shell</el-radio>
+                </el-radio-group>
               </el-form-item>
               <el-form-item label="执行对象类型：" prop="tgt_type" class="is-required">
                 <el-row>
@@ -225,7 +223,7 @@ import { Message } from 'element-ui'
 const defaultTaskData = {
   id: '',
   name: '',
-  task: '',
+  task: '命令',
   enabled: true,
   one_off: false,
   interval: null,
@@ -299,7 +297,6 @@ export default {
       // 表单验证
       rules: {
         name: {required: true, message: '不为空', trigger: 'blur'},
-        task: {required: true, message: '不为空', trigger: 'change'},
         tgt_type: {validator: checkTgtType, trigger: 'change'},
         tgt: {validator: checkTgt, trigger: 'change'},
         clocked: {validator: checkScheduler, trigger: 'change'},
