@@ -315,6 +315,11 @@ export default {
       // 下面name的值我是随便设置的
       let pos = row.avatar.lastIndexOf('/')
       let name = row.avatar.substr(pos+1)
+      // 头像的静态文件路径需要按实际外网来替换而不是直接取存数据库的头像url，因为存入数据库的可能是个内网url外网无法访问到，
+      // 下面就是用process.env.VUE_APP_BASE_API来获取真实访问接口替换数据库的url，保证外网可以访问到图片
+      let reg = /^http(s)?:\/\/(.*?)\//
+      var ToReplace = process.env.VUE_APP_BASE_API + '/'
+      row.avatar = row.avatar.replace(reg, ToReplace)
       this.fileList = [{name: name, url: row.avatar}, ]
       this.uploadHide = this.fileList.length > 0
       this.username_error = '';
