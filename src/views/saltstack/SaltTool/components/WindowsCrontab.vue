@@ -359,7 +359,6 @@ export default {
               for(let index of this.exeData.minion_list){
                 data.tgt.push(this.minionid_list[index])
               }
-              data.tgt = data.tgt.join(",")
             }
             else {
               this.transfer_error = true;

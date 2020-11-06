@@ -353,7 +353,11 @@ export default {
     'task.tgt_type': {
       handler: function (val, oldVal) {
         if(this.minion_list.length === 0 && val === 'minion_list'){
-          this.getIdList();
+          // 编辑Task我单独写获取minion-id的操作
+          if(this.dialogTaskFormTitle != '编辑Task'){
+            this.getIdList();
+          }
+          
         }
       }
     },
@@ -509,7 +513,6 @@ export default {
               for(let minion of data.minion_list){
                 data.tgt.push(minion)
               }
-              data.tgt = data.tgt.join(",")
             }
             else {
               this.minion_transfer_error = '请至少选择一个Minion ID'
@@ -563,24 +566,23 @@ export default {
       this.scheduler_error = ''
       this.name_error = ''
       this.dialogTaskFormVisible = true
-      // 穿梭框搜索关键词清空
+
+      // 弹窗数据填充,this.$nextTick会等待this.dialogTaskFormVisible = true即弹窗生成完成后再开始填充数据
       this.$nextTick(()=>{
-        this.$refs.dataTransfer.clearQuery("left")
-      　this.$refs.dataTransfer.clearQuery("right")
-        this.$refs['taskForm'].clearValidate()
-        this.resetTemp()
         data.kwargs = JSON.parse(data.kwargs)
         data.tgt_type = this.get_tgt_type[data.kwargs.tgt_type]
-        data.tgt = data.kwargs.tgt
         if(data.tgt_type == 'any'){
           data.tgt = ''
         }
-        if(data.tgt_type == 'minion_list'){
-          data.minion_list = data.kwargs.tgt.split(",")
+        else if(data.tgt_type == 'minion_list'){
+          data.minion_list = data.kwargs.tgt
+          // 如果data.tgt_type == 'minion_list'那么data.kwargs.tgt肯定是个列表，
+          // 不能把列表给data.tgt因为data.tgt赋值到 执行对象输入框 会报错（input输入框只能赋值字符串）
+          data.tgt = ''
         }else{
           // 这里如果不是minion_list也要给他赋值一个空列表，因为我上面watch里有做data.minion_list的length判断
-          // 如果不赋值
           data.minion_list = []
+          data.tgt = data.kwargs.tgt
         }
         data.execute_cmd = data.kwargs.execute_cmd
         data.enabled = data.enabled?true:false
@@ -592,8 +594,30 @@ export default {
         }else if(data.crontab){
           data.scheduler = 'Crontab'
         }
+        
         this.task = data;
+        
+        // 穿梭框数据填充
+        this.$refs.dataTransfer.clearQuery("left")
+      　this.$refs.dataTransfer.clearQuery("right")
+        this.$refs['taskForm'].clearValidate()
+
+        let tmp_minion_list = this.task.minion_list
+        this.task.minion_list = []
+        getMinionIdList().then(response =>{
+            const minionList = response.data.results;
+            minionList.forEach((minion_id, index) => {
+            this.minion_list.push({
+              label: minion_id,
+              key: minion_id
+              });
+            });
+            this.task.minion_list = tmp_minion_list
+        }).catch(error => {
+          console.log('getMinionIdList' + error);
+        })
       })
+      
     },
 
      // 更新Task
@@ -619,7 +643,6 @@ export default {
               for(let minion of data.minion_list){
                 data.tgt.push(minion)
               }
-              data.tgt = data.tgt.join(",")
             }
             else {
               this.minion_transfer_error = '请至少选择一个Minion ID'

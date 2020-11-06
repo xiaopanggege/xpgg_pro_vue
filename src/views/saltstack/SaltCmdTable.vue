@@ -236,7 +236,6 @@ export default {
           this.temp.minion_list.forEach((minion) => {
             data.minions.push(minion)
           });
-          data.minions = data.minions.join(",")
           updateSaltCmdList(data).then(response => {
             if(response.data.status){
               Message.success(response.data.results)

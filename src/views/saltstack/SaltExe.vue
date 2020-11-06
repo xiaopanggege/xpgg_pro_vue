@@ -370,7 +370,6 @@ export default {
               for(let minion of this.exeData.minion_list){
                 data.tgt.push(minion)
               }
-              data.tgt = data.tgt.join(",")
             }
             else {
               this.minion_transfer_error = '请至少选择一个Minion ID'
