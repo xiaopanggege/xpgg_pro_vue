@@ -21,6 +21,7 @@ export const routerMap={
   '/views/task/TaskTime/TaskCrontab':()=>import('@/views/task/TaskTime/TaskCrontab'),
   '/views/task/TaskTime/TaskInterval':()=>import('@/views/task/TaskTime/TaskInterval'),
   '/views/permission/role':()=>import('@/views/permission/role'),
+  '/views/system/UserInfo':()=>import('@/views/system/UserInfo'),
   '/views/system/UserControl':()=>import('@/views/system/UserControl'),
   // '':()=>import('@'),
  }

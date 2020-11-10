@@ -182,7 +182,7 @@ export default {
       }
     },
 
-    // Reshape the routes structure so that it looks the same as the sidebar
+    // 重新调整路由结构，使其看起来与边栏相同
     generateRoutes(routes, basePath = '/') {
       const res = []
 

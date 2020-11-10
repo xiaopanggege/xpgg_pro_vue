@@ -294,6 +294,15 @@ export const asyncRoutes = [
     },
     children: [
       {
+        path: 'userinfo',
+        component: () => import('@/views/system/UserInfo'),
+        name: 'UserInfo',
+        meta: {
+          title: '个人中心',
+          roles: ['admin'], icon: 'submenu'
+        }
+      },
+      {
         path: 'user',
         component: () => import('@/views/system/UserControl'),
         name: 'UserControl',
@@ -302,6 +311,7 @@ export const asyncRoutes = [
           roles: ['admin'], icon: 'submenu'
         }
       }
+      
     ]
   },
 
