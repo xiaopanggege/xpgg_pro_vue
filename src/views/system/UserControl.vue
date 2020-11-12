@@ -130,7 +130,7 @@
       
       
       <div slot="footer" class="dialog-footer">
-        <el-button @click="updateLoading = false;addLoading = false;dialogUserPassFormVisible = false">取消</el-button>
+        <el-button @click="updatePassLoading = false;dialogUserPassFormVisible = false">取消</el-button>
         <el-button type="primary"  @click="handleUpdatePass" :loading="updatePassLoading">更 新</el-button>
         
         

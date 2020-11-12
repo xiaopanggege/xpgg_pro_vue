@@ -18,9 +18,14 @@
         
         <!-- </a> -->
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <el-dropdown-item>
+          <!-- <el-dropdown-item>
             <span class="avatar-name" >个人中心</span>
-          </el-dropdown-item>
+          </el-dropdown-item> -->
+          <router-link to="/system/userinfo">
+            <el-dropdown-item>
+              个人中心
+            </el-dropdown-item>
+          </router-link>
           <router-link to="/">
             <el-dropdown-item>
               首页
@@ -136,12 +141,12 @@ export default {
           border-radius: 10px;
         }
 
-        .avatar-name {
-          position: relative;
-          // right: -20px;
-          bottom: 15px;
-          font-size: 14px;
-        }
+        // .avatar-name {
+        //   position: relative;
+        //   // right: -20px;
+        //   bottom: 15px;
+        //   font-size: 14px;
+        // }
 
         .el-icon-caret-bottom {
           cursor: pointer;
