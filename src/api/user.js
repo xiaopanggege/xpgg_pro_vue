@@ -38,3 +38,12 @@ export function deleteUser(id) {
     method: 'delete'
   })
 }
+
+// 修改密码 查询旧密码是否正确
+export function passAuth(data) {
+  return request({
+    url: '/passauth/',
+    method: 'post',
+    data
+  })
+}

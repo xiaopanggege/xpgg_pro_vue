@@ -187,7 +187,7 @@ export default {
     };
     // 更新密码验证
     var validateUpdatePass = (rule, value, callback) => {
-      if (value === '') {
+      if (value === '' || !value) {
         callback(new Error('请输入密码'));
       } else {
         if (this.UserData.checkPassword !== '') {
@@ -199,7 +199,7 @@ export default {
       }
     };
     var validateUpdatePass2 = (rule, value, callback) => {
-      if (value === '') {
+      if (value === '' || !value) {
         callback(new Error('请再次输入密码'));
       } else if (value !== this.UserData.password) {
         callback(new Error('两次输入密码不一致!'));

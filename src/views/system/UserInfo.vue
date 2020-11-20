@@ -7,7 +7,7 @@
         </el-form-item>
         <el-form-item label="密码：" >
           <!-- <el-button type="primary" size="small" @click="handleUpdatePass" :loading="updateLoading">修改密码</el-button> -->
-           <el-button type="primary" size="mini" @click="handUpdatePassDailog(UserData)">重置密码</el-button>
+           <el-button type="primary" size="mini" @click="dialogUserPassFormVisible=true">重置密码</el-button>
         </el-form-item>
         <el-form-item label="邮箱：" prop="email">
           <el-input v-model="UserData.email" style="width:160px;" ></el-input>
@@ -40,22 +40,26 @@
   
 
     <!-- 密码重置单独一个提交 -->
-    <el-dialog class="UpdatePassForm"  :title="'用户 ' +UserData.username + ' ' + dialogUserPassFormTitle" width="750px" :visible.sync="dialogUserPassFormVisible" :close-on-click-modal="false" >
+    <el-dialog class="UpdatePassForm"  :title="'用户 ' +UserData.username + ' ' + dialogUserPassFormTitle" width="750px" :visible.sync="dialogUserPassFormVisible" :close-on-click-modal="false" 
+    @close="closeUpdatePassDialog">
       
       <div>
-        <el-form ref="UpdatePassForm" :rules="updateRules"  :model="UserData" label-position="right" label-width="130px" style="margin:0;">
-          <el-form-item label="密码："  prop="password" class="is-required" >
-            <el-input type="password" style="width:160px;" v-model="UserData.password" autocomplete="off"></el-input>
+        <el-form ref="UpdatePassForm" :rules="updateRules"  :model="passData" label-position="right" label-width="130px" style="margin:0;">
+          <el-form-item label="旧密码："  prop="oldPassword" class="is-required" :error="password_error">
+            <el-input type="password" style="width:160px;" v-model="passData.oldPassword" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="确认密码：" prop="checkPassword" class="is-required" >
-            <el-input type="password" style="width:160px;" v-model="UserData.checkPassword" autocomplete="off"></el-input>
+          <el-form-item label="新密码："  prop="newPassword" class="is-required" >
+            <el-input type="password" style="width:160px;" v-model="passData.newPassword" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="确认新密码：" prop="checkPassword" class="is-required" >
+            <el-input type="password" style="width:160px;" v-model="passData.checkPassword" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
       </div>
       
       
       <div slot="footer" class="dialog-footer">
-        <el-button @click="updatePassLoading = false;dialogUserPassFormVisible = false">取消</el-button>
+        <el-button @click="dialogUserPassFormVisible=false">取消</el-button>
         <el-button type="primary"  @click="handleUpdatePass" :loading="updatePassLoading">更 新</el-button>
         
         
@@ -66,7 +70,7 @@
 </template>
 
 <script>
-import { getUserList, addUser, updateUser, deleteUser } from '@/api/user'
+import { getUserList, addUser, updateUser, deleteUser, passAuth } from '@/api/user'
 import { getInfo } from '@/api/login'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // Waves directive
@@ -77,8 +81,6 @@ const defaultUserData = {
   username: '',
   is_superuser: false,
   is_active: true,
-  password: '',
-  checkPassword: '',
   avatar: '',
   email: '',
   date_joined: '',
@@ -91,22 +93,29 @@ export default {
   directives: { waves },
   data() {
     // 更新密码验证
-    var validateUpdatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'));
+    var validateUpdatePass1 = (rule, value, callback) => {
+      if (value === '' || !value) {
+        callback(new Error('请输入旧密码'));
       } else {
-        if (this.UserData.checkPassword !== '') {
-          if(typeof(this.UserData.checkPassword) !== "undefined"){
+        callback();
+      }
+    };
+    var validateUpdatePass2 = (rule, value, callback) => {
+      if (value === '' || !value) {
+        callback(new Error('请输入新密码'));
+      } else {
+        if (this.passData.checkPassword !== '') {
+          if(typeof(this.passData.checkPassword) !== "undefined"){
             this.$refs.UpdatePassForm.validateField('checkPassword');
           }
         }
         callback();
       }
     };
-    var validateUpdatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'));
-      } else if (value !== this.UserData.password) {
+    var validateUpdatePass3 = (rule, value, callback) => {
+      if (value === '' || !value) {
+        callback(new Error('请再次输入新密码'));
+      } else if (value !== this.passData.newPassword) {
         callback(new Error('两次输入密码不一致!'));
       } else {
         callback();
@@ -122,11 +131,14 @@ export default {
       },
       // 更新密码表单验证
       updateRules: {
-        password: [
-            { validator: validateUpdatePass, trigger: 'blur' }
+        oldPassword: [
+            { validator: validateUpdatePass1, trigger: 'blur' } 
+          ],
+        newPassword: [
+            { validator: validateUpdatePass2, trigger: 'blur' }
           ],
         checkPassword: [
-          { validator: validateUpdatePass2, trigger: 'blur' }
+          { validator: validateUpdatePass3, trigger: 'blur' }
         ],
       },
       updateLoading: false,
@@ -134,9 +146,11 @@ export default {
       imageUrl: '',
       fileList: [],
       uploadHide: false,
+      passData: { oldPassword: '', newPassword: '', checkPassword: ''},
       dialogUserPassFormTitle: '重置密码',
       dialogUserPassFormVisible: false,
       updatePassLoading: false,
+      password_error: ''
     }
   },
   watch:{
@@ -181,71 +195,97 @@ export default {
           if(this.fileList.length>0 && this.fileList[0]['status'] === 'ready'){
             formData.append('avatar', this.fileList[0].raw)
           }
-          this.updateLoading = true
-          updateUser(this.UserData.id, formData).then(response => {
-            if(response.data.status){
-              this.updateLoading = false
-              Message.success(response.data.results)
-            }
-            else{
-              this.updateLoading = false
-              let result_data = response.data.results
-              console.log(JSON.stringify(result_data));
-              if(Object.prototype.toString.call(result_data) === '[object Object]'){
-                for (let k in result_data){
-                  this[`${k}_error`] = result_data[k][0]
-                }
-              }else{
-                Message.error(response.data.results)
+
+          this.$confirm('确定要提交当前变更吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).then(() => {
+              this.updateLoading = true
+              updateUser(this.UserData.id, formData).then(response => {
+              if(response.data.status){
+                this.updateLoading = false
+                Message.success(response.data.results)
               }
-            }
-          }).catch(error => {
-            this.updateLoading = false
-            console.log('提交更新' + error);
-          })
+              else{
+                this.updateLoading = false
+                let result_data = response.data.results
+                console.log(JSON.stringify(result_data));
+                if(Object.prototype.toString.call(result_data) === '[object Object]'){
+                  for (let k in result_data){
+                    this[`${k}_error`] = result_data[k][0]
+                  }
+                }else{
+                  Message.error(response.data.results)
+                }
+              }
+            }).catch(error => {
+              this.updateLoading = false
+              console.log('提交更新出错：' + error);
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消更新'
+              });          
+            });
         } else{
           return false
         }
       });
     },
 
-    // 密码弹出框
-    handUpdatePassDailog(row){
-      this.UserData = {...row}
-      this.dialogUserPassFormVisible = true
-      // 弹出框延时清空
-      this.$nextTick(()=>{
-        this.$refs['UpdatePassForm'].clearValidate()
-      })
+    // 关闭密码弹出框，清空数据
+    closeUpdatePassDialog(row){
+      this.$refs['UpdatePassForm'].resetFields()
+      this.dialogUserPassFormVisible = false
     },
+
     // 重置密码
     handleUpdatePass() {
       this.$refs['UpdatePassForm'].validate((valid) => {
         if (valid) {
-          const newPass = {'password': this.UserData.password}
+          const oldPass = {'password': this.passData.oldPassword}
+          const newPass = {'password': this.passData.newPassword}
           this.updatePassLoading = true
-          updateUser(this.UserData.id, newPass).then(response => {
+          this.password_error = ''
+          passAuth(oldPass).then(response => {
             if(response.data.status){
-              this.updatePassLoading = false
-              this.dialogUserPassFormVisible = false
-              Message.success(response.data.results)
-            }
-            else{
-              this.updatePassLoading = false
-              let result_data = response.data.results
-              console.log(JSON.stringify(result_data));
-              if(Object.prototype.toString.call(result_data) === '[object Object]'){
-                for (let k in result_data){
-                  this[`${k}_error`] = result_data[k][0]
-                }
-              }else{
-                Message.error(response.data.results)
+              updateUser(this.UserData.id, newPass).then(response => {
+              if(response.data.status){
+                this.updatePassLoading = false
+                this.dialogUserPassFormVisible = false
+                Message.success(response.data.results)
               }
-            }
+              else{
+                this.updatePassLoading = false
+                let result_data = response.data.results
+                console.log(JSON.stringify(result_data));
+                if(Object.prototype.toString.call(result_data) === '[object Object]'){
+                  for (let k in result_data){
+                    this[`${k}_error`] = result_data[k][0]
+                  }
+                }else{
+                  Message.error(response.data.results)
+                }
+              }
+            }).catch(error => {
+              this.updatePassLoading = false
+              console.log('重置密码' + error);
+            })
+          }
+          else{
+            this.updatePassLoading = false
+            let result_data = response.data.results
+            console.log(JSON.stringify(result_data));
+            this.password_error = result_data
+          }
           }).catch(error => {
             this.updatePassLoading = false
             console.log('重置密码' + error);
           })
+
+          
         } else{
           return false
         }
