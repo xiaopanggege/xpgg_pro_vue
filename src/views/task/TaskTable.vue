@@ -475,7 +475,7 @@ export default {
     },
     // 新增Task弹出框
     handleAddTaskDailog(){
-      this.dialogTaskFormTitle=='新增Task'
+      this.dialogTaskFormTitle='新增Task'
       this.dialogTaskFormVisible = true
       // 穿梭框搜索关键词清空
       this.$nextTick(()=>{
@@ -794,39 +794,42 @@ export default {
       getTaskLogList(this.logListQuery).then(response => {
         this.logData = response.data.results[0]
         this.logTotal = response.data.count
-        // 这个要加不然，默认是undefined，下面用这个参数累加的时候，第一列就会一直是undefined
-        this.logData.log = ''
-        if(Object.prototype.toString.call(JSON.parse(this.logData.result)) !== '[object String]'){
-          let data_count = 0;
-          let data = JSON.parse(this.logData.result)
-          for(let k in data){
-            let v = data[k]
-            // 因为只是执行的cmd.run其实大部分结果都是字符串，应该没有对象或者列表类型哈，但是在saltEXE页面就有
-            if(Object.prototype.toString.call(v) === '[object Object]'){
-              this.logData.log  = this.logData.log +"<p style='color: #45ddd4;font-weight: bold;'>"+k+":</p>";
-              this.logFun(v,data_count+1);
+        if(this.logData !== undefined){
+          if(Object.prototype.toString.call(JSON.parse(this.logData.result)) !== '[object String]'){
+            let data_count = 0;
+            let data = JSON.parse(this.logData.result)
+            for(let k in data){
+              let v = data[k]
+              // 因为只是执行的cmd.run其实大部分结果都是字符串，应该没有对象或者列表类型哈，但是在saltEXE页面就有
+              if(Object.prototype.toString.call(v) === '[object Object]'){
+                this.logData.log  = this.logData.log +"<p style='color: #45ddd4;font-weight: bold;'>"+k+":</p>";
+                this.logFun(v,data_count+1);
+              }
+              else if(Object.prototype.toString.call(v) === '[object Array]'){
+                this.logData.log  = this.logData.log +"<p style='color: #45ddd4;font-weight: bold;'>"+k+":</p>";
+                this.logFun(v,data_count+1);
+                this.logData.log  = this.logData.log +'\n\n';
+              }else{
+                this.logData.log  = this.logData.log +"<p style='color: #3FB8AF;font-weight: bold;'>"+k+":</p>";
+                this.logData.log  = this.logData.log +"<p style='padding-left: 25px;'>"+v+"</p>";
+                this.logData.log  = this.logData.log +'\n\n';
+              }
             }
-            else if(Object.prototype.toString.call(v) === '[object Array]'){
-              this.logData.log  = this.logData.log +"<p style='color: #45ddd4;font-weight: bold;'>"+k+":</p>";
-              this.logFun(v,data_count+1);
-              this.logData.log  = this.logData.log +'\n\n';
-            }else{
-              this.logData.log  = this.logData.log +"<p style='color: #3FB8AF;font-weight: bold;'>"+k+":</p>";
-              this.logData.log  = this.logData.log +"<p style='padding-left: 25px;'>"+v+"</p>";
-              this.logData.log  = this.logData.log +'\n\n';
-            }
+          }
+          else{
+            this.logData = {log: ''}
+            this.logData.log = this.logData.log + "<p style='color: #bf0000;'>"+JSON.parse(this.logData.result)+"</p>"
           }
         }
         else{
-          this.logData.log = ''
-          this.logData.log = this.logData.log + "<p style='color: #bf0000;'>"+JSON.parse(this.logData.result)+"</p>"
+          this.logData = {log: '还未执行过'}
         }
         setTimeout(() => {
           this.logLoading = false
         }, 0.2 * 1000)
       }).catch(error => {
         console.log('任务日志查询' + error);
-        this.logData.log = ''
+        this.logData = {log: ''}
         this.logData.log = this.logData.log + "<p style='color: #bf0000;'>"+error+"</p>"
         setTimeout(() => {
           this.logLoading = false
