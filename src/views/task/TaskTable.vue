@@ -798,6 +798,7 @@ export default {
           if(Object.prototype.toString.call(JSON.parse(this.logData.result)) !== '[object String]'){
             let data_count = 0;
             let data = JSON.parse(this.logData.result)
+            this.logData = {log: ''}
             for(let k in data){
               let v = data[k]
               // 因为只是执行的cmd.run其实大部分结果都是字符串，应该没有对象或者列表类型哈，但是在saltEXE页面就有
