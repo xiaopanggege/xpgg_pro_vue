@@ -38,9 +38,49 @@ export function deleteRole(id) {
   })
 }
 
-export function getUsers() {
+// 查询view-api权限所有不分页
+export function getViewApiAll() {
   return request({
-    url: '/users/',
-    method: 'get'
+    url: '/view-api-all/',
+    method: 'get',
+  })
+}
+
+
+// 查询角色包含的用户列表
+export function getRoleUsers(query) {
+  return request({
+    url: '/roles-user/',
+    method: 'get',
+    params: query
+  })
+}
+
+
+// 查询用户列表
+export function getUserList(query) {
+  return request({
+    url: '/userinfo/',
+    method: 'get',
+    params: query
+  })
+}
+
+// 添加用户
+export function addRoleUser(data) {
+  return request({
+    url: '/roles-user/',
+    method: 'post',
+    data
+  })
+}
+
+
+// 删除用户，后台是用更新的方式
+export function deleteRoleUser(id, data) {
+  return request({
+    url: `/roles-user/${id}/`,
+    method: 'delete',
+    data
   })
 }

@@ -14,6 +14,7 @@ export const routerMap={
   '/views/release/ReleaseGroupTable':()=>import('@/views/release/ReleaseGroupTable'),
   '/views/release/ReleaseGroupMemberTable':()=>import('@/views/release/ReleaseGroupMemberTable'),
   '/views/release/ReleaseAuthTable':()=>import('@/views/release/ReleaseAuthTable'),
+  '/views/auto-tools/AllowInternet':()=>import('@/views/auto-tools/AllowInternet'),
   '/views/task/TaskTable':()=>import('@/views/task/TaskTable'),
   '/views/task/TaskLog':()=>import('@/views/task/TaskLog'),
   '/views/task/TaskTime/index':()=>import('@/views/task/TaskTime/index'),
@@ -23,6 +24,8 @@ export const routerMap={
   '/views/permission/role':()=>import('@/views/permission/role'),
   '/views/system/UserInfo':()=>import('@/views/system/UserInfo'),
   '/views/system/UserControl':()=>import('@/views/system/UserControl'),
+  '/views/system/RuiJieUserInfo':()=>import('@/views/system/RuiJieUserInfo'),
+  '/views/system/SysConfig':()=>import('@/views/system/SysConfig'),
   // '':()=>import('@'),
  }
 

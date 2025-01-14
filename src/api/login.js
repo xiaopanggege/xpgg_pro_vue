@@ -14,8 +14,8 @@ export function login(username, password) {
 export function getInfo() {
   return request({
     // url中最后的/1/是随便填写的，后端已经写死必须获取登录用户的信息了
-    url: '/userinfo/1/',
-    method: 'get',
+    url: '/personal/1/',
+    method: 'get'
     // params: { username }
   })
 }
@@ -27,3 +27,21 @@ export function logout() {
     method: 'post'
   })
 }
+
+
+// cas单点登录验证（登录的话是post方法，get方法是验证）
+export function casLogin(ticket, next) {
+  return request({
+    url: '/cas-login/',
+    method: 'get',
+    params: { next, ticket }
+  });
+}
+
+// cas单点登录退出，没用上，cas服务端不支持跨域退出，只能直接访问cas的登出页面
+// export function casLogout() {
+//   return request({
+//     url: '/cas-logout/',
+//     method: 'get'
+//   });
+// }

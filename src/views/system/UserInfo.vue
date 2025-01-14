@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { getUserList, addUser, updateUser, deleteUser, passAuth } from '@/api/user'
+import { getUserList, addUser, updatePersonal, deleteUser, passAuth } from '@/api/user'
 import { getInfo } from '@/api/login'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // Waves directive
@@ -202,7 +202,7 @@ export default {
             type: 'warning'
             }).then(() => {
               this.updateLoading = true
-              updateUser(this.UserData.id, formData).then(response => {
+              updatePersonal(this.UserData.id, formData).then(response => {
               if(response.data.status){
                 this.updateLoading = false
                 Message.success(response.data.results)
@@ -251,7 +251,7 @@ export default {
           this.password_error = ''
           passAuth(oldPass).then(response => {
             if(response.data.status){
-              updateUser(this.UserData.id, newPass).then(response => {
+              updatePersonal(this.UserData.id, newPass).then(response => {
               if(response.data.status){
                 this.updatePassLoading = false
                 this.dialogUserPassFormVisible = false

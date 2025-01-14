@@ -117,44 +117,45 @@ export const asyncRoutes = [
     name: 'Saltstack',
     meta: {
       title: 'Saltstack',
-      icon: 'saltstack'
+      icon: 'saltstack',
+      roles: ['admin']
     },
     children: [
       {
         path: 'minion-table',
         component: () => import('@/views/saltstack/MinionTable'),
         name: 'SaltMinionTable',
-        meta: { title: 'Minion管理', icon: 'submenu' }
+        meta: { title: 'Minion管理', icon: 'submenu',roles: ['admin'] }
       },
       {
         path: 'saltkey-table',
         component: () => import('@/views/saltstack/SaltKeyTable'),
         name: 'SaltKeyTable',
-        meta: { title: 'SaltKey管理', icon: 'submenu' }
+        meta: { title: 'SaltKey管理', icon: 'submenu',roles: ['admin'] }
       },
       {
         path: 'saltcmd-table',
         component: () => import('@/views/saltstack/SaltCmdTable'),
         name: 'SaltCmdTable',
-        meta: { title: 'Salt命令集', icon: 'submenu' }
+        meta: { title: 'Salt命令集', icon: 'submenu',roles: ['admin'] }
       },
       {
         path: 'saltexe',
         component: () => import('@/views/saltstack/SaltExe'),
         name: 'SaltExe',
-        meta: { title: 'Salt命令执行', icon: 'submenu' }
+        meta: { title: 'Salt命令执行', icon: 'submenu',roles: ['admin'] }
       },
       {
         path: 'saltool',
         component: () => import('@/views/saltstack/SaltTool'),
         name: 'SaltTool',
-        meta: { title: 'Salt快捷工具', icon: 'submenu' }
+        meta: { title: 'Salt快捷工具', icon: 'submenu',roles: ['admin'] }
       },
       {
         path: 'fileserver',
         component: () => import('@/views/saltstack/FileServer'),
         name: 'FileServer',
-        meta: { title: '文件服务', icon: 'submenu' }
+        meta: { title: '文件服务', icon: 'submenu',roles: ['admin'] }
       },
     ]
   },
@@ -166,20 +167,21 @@ export const asyncRoutes = [
     name: 'Release',
     meta: {
       title: '发布系统',
-      icon: 'release'
+      icon: 'release',
+      roles: ['admin']
     },
     children: [
       {
         path: 'release-table',
         component: () => import('@/views/release/ReleaseTable'),
         name: 'ReleaseTable',
-        meta: { title: '应用发布', icon: 'submenu' }
+        meta: { title: '应用发布', icon: 'submenu',roles: ['admin'] }
       },
       {
         path: 'releasegroup-table',
         component: () => import('@/views/release/ReleaseGroupTable'),
         name: 'ReleaseGroupTable',
-        meta: { title: '应用发布组', icon: 'submenu' }
+        meta: { title: '应用发布组', icon: 'submenu',roles: ['admin'] }
       },
       {
         // 这个是动态路由的路径参数以冒号开头，使用方法不难先看下上面应用发布组的成员发布页按钮，然后看下面成员发布methods最前面2条，一看就懂
@@ -187,15 +189,41 @@ export const asyncRoutes = [
         path: 'releasemember-table/:id/:app_group_name',
         component: () => import('@/views/release/ReleaseGroupMemberTable'),
         name: 'ReleaseGroupMemberTable',
-        meta: { title: '组成员发布', activeMenu: '/release/releasegroup-table'},
+        meta: { title: '组成员发布', activeMenu: '/release/releasegroup-table',  roles: ['admin']},
         hidden: true
       },
       {
         path: 'releaseauth-table',
         component: () => import('@/views/release/ReleaseAuthTable'),
         name: 'ReleaseAuthTable',
-        meta: { title: '应用授权', icon: 'submenu' }
+        meta: { title: '应用授权', icon: 'submenu', roles: ['admin'] }
       },
+    ]
+  },
+
+  // 自动化OP工具集
+  {
+    path: '/auto-tools',
+    component: Layout,
+    redirect: '/auto-tools/allow-internet',
+    alwaysShow: true, // will always show the root menu
+    name: 'AutoTools',
+    meta: {
+      title: 'OP工具集',
+      icon: 'tool',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'allow-internet',
+        component: () => import('@/views/auto-tools/AllowInternet'),
+        name: 'AllowInternet',
+        meta: {
+          title: '开通外网',
+          roles: ['admin'], icon: 'submenu'
+          
+        }
+      }
     ]
   },
 
@@ -207,20 +235,21 @@ export const asyncRoutes = [
     name: 'Task',
     meta: {
       title: '任务调度',
-      icon: 'crontab'
+      icon: 'crontab',
+      roles: ['admin']
     },
     children: [
       {
         path: 'task-table',
         component: () => import('@/views/task/TaskTable'),
         name: 'TaskTable',
-        meta: { title: '任务列表', icon: 'submenu' }
+        meta: { title: '任务列表', icon: 'submenu', roles: ['admin']}
       },
       {
         path: 'task-log',
         component: () => import('@/views/task/TaskLog'),
         name: 'TaskLog',
-        meta: { title: '任务日志', icon: 'submenu' }
+        meta: { title: '任务日志', icon: 'submenu', roles: ['admin'] }
       },
       // 路由嵌套 多级子菜单写法参考下面这里
       {
@@ -230,25 +259,25 @@ export const asyncRoutes = [
         // 当然你想显示也可以，不过就一个空壳
         component: () => import('@/views/task/TaskTime/index'),
         name: 'TaskTime',
-        meta: { title: '任务时间', icon: 'submenu' },
+        meta: { title: '任务时间', icon: 'submenu', roles: ['admin'] },
         children: [
           {
             path: 'task-clocked',
             component: () => import('@/views/task/TaskTime/TaskClocked'),
             name: 'TaskClocked',
-            meta: { title: 'Clocked', icon: 'submenu' }
+            meta: { title: 'Clocked', icon: 'submenu', roles: ['admin'] }
           },
           {
             path: 'task-crontab',
             component: () => import('@/views/task/TaskTime/TaskCrontab'),
             name: 'TaskCrontab',
-            meta: { title: 'Crontabs', icon: 'submenu' }
+            meta: { title: 'Crontabs', icon: 'submenu', roles: ['admin'] }
           },
           {
             path: 'task-interval',
             component: () => import('@/views/task/TaskTime/TaskInterval'),
             name: 'TaskInterval',
-            meta: { title: 'Intervals', icon: 'submenu' }
+            meta: { title: 'Intervals', icon: 'submenu', roles: ['admin'] }
           },
         ]
       },
@@ -308,6 +337,24 @@ export const asyncRoutes = [
         name: 'UserControl',
         meta: {
           title: '用户管理',
+          roles: ['admin'], icon: 'submenu'
+        }
+      },
+      {
+        path: 'ruijieuserinfo',
+        component: () => import('@/views/system/RuiJieUserInfo'),
+        name: 'RuiJieUserInfo',
+        meta: {
+          title: '锐捷用户信息',
+          roles: ['admin'], icon: 'submenu'
+        }
+      },
+      {
+        path: 'sysconfig',
+        component: () => import('@/views/system/SysConfig'),
+        name: 'SysConfig',
+        meta: {
+          title: '系统配置',
           roles: ['admin'], icon: 'submenu'
         }
       }

@@ -114,7 +114,7 @@
                     <p>salt '*' ps.proc_info 2322 attrs='["pid", "name"]' 其中参数是：<span style="color: red">2322 </span>和<span style="color: red">attrs='["pid", "name"]'</span></p>
                     <p>平台需要写成：参数1:<span style="color: red">pid=2322 </span>参数2:<span style="color: red">attrs=["pid","name"]</span>   # 注意第二个参数列表外的引号不需要</p>
                     <p>例2： 命令：salt '*' state.sls myslsfile pillar="{foo: 'Foo!', bar: 'Bar!'}"</p>
-                    <p>平台需要写成：参数1:<span style="color: red">myslsfile </span>参数2:<span style="color: red">pillar={foo: 'Foo!', bar: 'Bar!'}</span>   # 注意第二个参数列表外的引号不需要</p></p> 
+                    <p>平台需要写成：参数1:<span style="color: red">myslsfile </span>参数2:<span style="color: red">pillar={foo: 'Foo!', bar: 'Bar!'}</span>   # 注意第二个参数列表外的引号不需要</p> 
                 </el-collapse-item>
               </el-collapse>
             </el-form-item>
@@ -127,7 +127,7 @@
                 v-loading="resultLoading"
                 :element-loading-text="loadingText"
                 element-loading-spinner="el-icon-loading"
-                element-loading-background="rgba(0, 0, 0, 0.8)">{{salt_exe_result_data}}</pre>
+                element-loading-background="rgba(0, 0, 0, 0.8)"></pre>
               </el-form-item>
           </el-form>
         </el-col>

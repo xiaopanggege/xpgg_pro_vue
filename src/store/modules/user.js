@@ -1,14 +1,16 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login, logout, getInfo, casLogin, casKey } from '@/api/login'
 import { getRoutes } from '@/api/role'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, removeCas } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import axios from 'axios'
 
 const state = {
   token: getToken(),
   name: '',
   avatar: '',
   roles: [],
-  is_superuser: false
+  is_superuser: false,
+  is_casLogin: false
 }
 
 const mutations = {
@@ -27,6 +29,9 @@ const mutations = {
   },
   SET_SUPERUSER: (state, is_superuser) => {
     state.is_superuser = is_superuser
+  },
+  SET_CASLOGIN:(state, is_casLogin) => {
+    state.is_casLogin = is_casLogin
   }
 }
 
@@ -47,12 +52,33 @@ const actions = {
     })
   },
 
+  // 添加cas登陆验证给permission.js里面调用
+  casLogin({ commit }, params) {
+    return new Promise((resolve, reject) => {
+        casLogin(params.ukey, params.path).then(response => {
+          const data = response.data
+          commit('SET_TOKEN', data.access)
+          commit('SET_NAME', data.username)
+          commit('SET_CASLOGIN', true)
+          setToken(response.data.access)
+          // 获取后端返回的后续访问path路径给vue，不然vue不知道后续跳哪个页面哈
+          resolve(data.next_page);
+        })
+          .catch(function (error) {
+            console.log(error)
+            reject(error)
+        })
+      }).catch((err)=>{
+        console.log(err);
+        reject(error)
+    })
+  },
+
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const data = response.data
-
         if (!data) {
           reject('验证失败请重新登陆.')
         }
@@ -64,8 +90,14 @@ const actions = {
         if (is_superuser){
           roles = [ 'superman' ]
           data.roles = [ 'superman' ]
-        }else if (!roles || roles.length <= 0) {
-          reject('账户未授权，无法获取可访问的页面菜单，请联系管理员进行角色授权.')
+        }
+        else if (!roles || roles.length <= 0) {
+          // reject('账户未授权，无法获取可访问的页面菜单，请联系管理员进行角色授权.')
+          // 原来是如果从后端获取的数据发现没有roles角色信息就直接返回登录页提示未授权，现在改成给一个游客角色
+          // 游客角色可以访问我在前端这router里面设置没有role限制的路由，名称我弄复杂点不会和后端数据库里人为创建的角色冲突
+          // 以后如果有时间可以优化下哈哈，目前这种方式是比较low点
+          roles = [ 'abcdefghigklmnopqrstuvwxyz_0987654321' ]
+          data.roles = [ 'abcdefghigklmnopqrstuvwxyz_0987654321' ]
         }
         
 
@@ -89,7 +121,7 @@ const actions = {
 
 
   // 前端退出登录
-  logout({ commit }) {
+  logout({ commit, state }) {
     return new Promise(resolve => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
@@ -98,6 +130,12 @@ const actions = {
         removeToken()
         resetRouter()
         resolve()
+        // cas重定向放在异步回调之后，通过判断之前存的SET_CAS判断是否通过cas登录
+        if(state.is_casLogin){
+          commit('SET_CASLOGIN', false) 
+          removeCas() 
+        }
+         
     })
   },
 

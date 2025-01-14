@@ -447,6 +447,7 @@ export default {
     getIdList(){
       getMinionIdList().then(response =>{
         const minionList = response.data.results;
+        this.minion_list = []
         minionList.forEach((minion_id, index) => {
         this.minion_list.push({
           label: minion_id,
@@ -480,8 +481,8 @@ export default {
       // 穿梭框搜索关键词清空
       this.$nextTick(()=>{
         this.$refs['task_name_focus'].focus();
-      　this.$refs.dataTransfer.clearQuery("left")
-      　this.$refs.dataTransfer.clearQuery("right")
+        this.$refs.dataTransfer.clearQuery("left")
+        this.$refs.dataTransfer.clearQuery("right")
         this.$refs['taskForm'].clearValidate()
         this.minion_transfer_error = ''
         this.scheduler_error = ''
@@ -599,13 +600,14 @@ export default {
         
         // 穿梭框数据填充
         this.$refs.dataTransfer.clearQuery("left")
-      　this.$refs.dataTransfer.clearQuery("right")
+        this.$refs.dataTransfer.clearQuery("right")
         this.$refs['taskForm'].clearValidate()
 
         let tmp_minion_list = this.task.minion_list
         this.task.minion_list = []
         getMinionIdList().then(response =>{
             const minionList = response.data.results;
+            this.minion_list = []
             minionList.forEach((minion_id, index) => {
             this.minion_list.push({
               label: minion_id,

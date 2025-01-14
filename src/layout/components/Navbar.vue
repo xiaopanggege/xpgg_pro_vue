@@ -69,7 +69,9 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)  //跳转回login
+      // 原来是直接跳转会对接的cas单点登录页，但是现在我把cas单点登录作为第三方登录所以现在重新跳回自己的登录页，在自己登录页上面有第三方登录按钮
+      // window.location.href = `https://sid.ruijie.com.cn/logout?service=http://yfxpgg.ruijie.com.cn/dashboard`
     }
   }
 }

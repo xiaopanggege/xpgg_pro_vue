@@ -33,7 +33,7 @@
                 :element-loading-text="loadingText"
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
-                >{{salt_exe_result_data}}</pre>
+                ></pre>
               </el-form-item>
           </el-form>
         </el-col>
@@ -82,7 +82,6 @@ export default {
     },
     // 执行任务查询命令
     handJobTool(formName){
-      console.log(formName);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let data = {jid:'',}

@@ -177,7 +177,7 @@ export default {
         }
         let data = {}
         data.id_list = id_list
-        console.log(data);
+        // console.log(data);
         multipleDeleteTaskLog(data).then(response => {
             if(response.data.status){
               Message.success(response.data.results)

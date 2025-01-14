@@ -39,11 +39,31 @@ export function deleteUser(id) {
   })
 }
 
-// 修改密码 查询旧密码是否正确
+// 个人中心
+// 更新用户,这个和上面更新用户区分开了是为了权限控制，个人只能修改自己的信息
+export function updatePersonal(id, data) {
+  return request({
+    url: `/personal/${id}/`,
+    method: 'patch',
+    data
+  })
+}
+// 个人修改密码 查询旧密码是否正确
 export function passAuth(data) {
   return request({
-    url: '/passauth/',
+    url: '/personal/',
     method: 'post',
     data
+  })
+}
+
+
+
+// 查询锐捷用户列表
+export function getRuiJieUserList(query) {
+  return request({
+    url: '/ruijieuserinfo/',
+    method: 'get',
+    params: query
   })
 }

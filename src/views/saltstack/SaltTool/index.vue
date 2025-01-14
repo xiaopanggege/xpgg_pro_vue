@@ -41,7 +41,7 @@ export default {
       },
       tool_help: {
         JobSearch: '提示：通过jid查询salt执行的状态和结果', 
-        WindowsCrontab: '提示：快速创建一个windows的计划任务', 
+        WindowsCrontab: '提示：快速创建一个windows的计划任务（前端还在开发中。。。）', 
       },
     }
   },

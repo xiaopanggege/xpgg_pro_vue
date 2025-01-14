@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">小胖运维系统</h3>
+        <h3 class="title">运维系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -47,7 +47,23 @@
         <span style="margin-right:20px;">username: admin</span>
         <span> password: any</span>
       </div> -->
-
+      <div  class="title-container1">
+        <p class="title1" >其他方式登录</p>
+      </div>
+      <div class="social-signup-container">
+        <div class="sign-btn" @click="ruijieHandleClick('ruijie')">
+          <span class="rj-svg-container"><svg-icon icon-class="ruijie" class-name="icon" /></span>
+          锐捷登录
+        </div>
+        <div class="sign-btn" @click="wechatHandleClick('wechat')">
+          <span class="wx-svg-container"><svg-icon icon-class="wechat" class-name="icon" /></span>
+          微信登录
+        </div>
+        <div class="sign-btn" @click="tencentHandleClick('tencent')">
+          <span class="qq-svg-container"><svg-icon icon-class="qq" class-name="icon" /></span>
+          QQ登录
+        </div>
+      </div>
     </el-form>
   </div>
 </template>
@@ -121,6 +137,31 @@ export default {
           return false
         }
       })
+    },
+
+    ruijieHandleClick(thirdpart) {
+      // 注意了，这里的跳转链接是有硬性要求的！！不然cas认证后验证那一步无法成功！硬性要求必须把后端的接口带上就像下面的cas-login/?next=，而且必须经过下面的
+      // encodeURIComponent 函数来对 URL 中的查询参数进行编码，不这么做发现跳转后页面会被url解码有误导致和后端cas验证ticket的接口匹配不上，导致验证失败
+      const serviceUrl = `http://yfxpgg.ruijie.com.cn/cas-login/?next=${this.redirect || '/dashboard'}`;
+      const encodedServiceUrl = encodeURIComponent(serviceUrl);
+      window.location.href = `https://sid.ruijie.com.cn/login?service=${encodedServiceUrl}`;
+    },
+
+    wechatHandleClick(thirdpart) {
+      alert('开发中。。')
+      // this.$store.commit('SET_AUTH_TYPE', thirdpart)
+      // const appid = 'xxxxx'
+      // const redirect_uri = encodeURIComponent('xxx/redirect?redirect=' + window.location.origin + '/auth-redirect')
+      // const url = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + appid + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_login#wechat_redirect'
+      // openWindow(url, thirdpart, 540, 540)
+    },
+    tencentHandleClick(thirdpart) {
+      alert('开发中。。')
+      // this.$store.commit('SET_AUTH_TYPE', thirdpart)
+      // const client_id = 'xxxxx'
+      // const redirect_uri = encodeURIComponent('xxx/redirect?redirect=' + window.location.origin + '/auth-redirect')
+      // const url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=' + client_id + '&redirect_uri=' + redirect_uri
+      // openWindow(url, thirdpart, 540, 540)
     }
   }
 }
@@ -225,6 +266,18 @@ $light_gray:#eee;
     }
   }
 
+  .title-container1 {
+    position: relative;
+
+    .title1 {
+      font-size: 13px;
+      color: #889aa4;
+      margin: 0px auto 0px auto;
+      text-align: center;
+      font-weight: bold;
+    }
+  }
+
   .show-pwd {
     position: absolute;
     right: 10px;
@@ -234,5 +287,60 @@ $light_gray:#eee;
     cursor: pointer;
     user-select: none;
   }
+
+  .social-signup-container {
+    margin: 5px 0;
+    .sign-btn {
+      display: inline-block;
+      cursor: pointer;
+      color: #889aa4;
+      font-size: 10px;
+    }
+    .icon {
+      color: #fff;
+      font-size: 24px;
+      margin-top: 8px;
+    }
+    .wx-svg-container,
+    .qq-svg-container {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      padding-top: 1px;
+      border-radius: 100%;
+      margin-bottom: 20px;
+      margin-right: 5px;
+    }
+    .wx-svg-container {
+      background-color: #24da70;
+      margin-left: 10px;
+    }
+    .qq-svg-container {
+      background-color: #6BA2D6;
+      margin-left: 10px;
+    }
+    .rj-svg-container{
+      display: inline-block;
+      width: 80px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      padding-top: 1px;
+      // border-radius: 100%;
+      // margin-bottom: 20px;
+      // margin-right: 5px;
+      .icon {
+        color: #fff;
+        font-size: 24px;
+        padding-top: 14px;
+        width: 80px;
+        height: 34px;
+        line-height: 40px;
+      }
+    }
+  }
+
 }
 </style>

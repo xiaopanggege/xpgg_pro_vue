@@ -47,9 +47,11 @@
           <span>{{ scope.row.minion_id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="IP地址" prop="ip" sortable="custom"  align="center" width="200">
+      <el-table-column label="IP地址" prop="ip" sortable="custom"  align="center" width="200" >
         <template slot-scope="scope">
-          <span>{{ scope.row.ip }}</span>
+          <el-tooltip class="item" effect="light" :content="scope.row.ip" placement="top">
+            <span class="ip_class">{{ scope.row.ip }}</span>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column label="系统类型"  align="center" width="100">
@@ -85,7 +87,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :page_size.sync="listQuery.page_size" @pagination="getList" />
 
-    <el-dialog v-el-drag-dialog :title="`MinionID ${temp.minion_id} 详细信息`" :visible.sync="dialogFormVisible" >
+    <el-dialog  :title="`MinionID ${temp.minion_id} 详细信息`" :visible.sync="dialogFormVisible" width="990px">
       <el-scrollbar style="height:100%">
       <el-form ref="dataForm"  :model="temp" label-position="right" label-width="130px" style="width: 800px;">
       <el-row :gutter="20">
@@ -438,12 +440,17 @@ export default {
     .status_success {
         color: #40c984;
       }
-      .status_danger {
-        color: #f4516c;
-      }
-      .status_waring {
-        color: #f4ce51;
-      }
+    .status_danger {
+      color: #f4516c;
+    }
+    .status_waring {
+      color: #f4ce51;
+    }
+    .ip_class {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
   }
 
 }

@@ -43,6 +43,11 @@
           <span v-else>普通用户</span>
         </template>
       </el-table-column>
+      <el-table-column label="用户来源" prop="source"   align="center" min-width="140">
+        <template slot-scope="scope">
+          <span>{{ scope.row.source }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="状态" prop="description"  align="center" min-width="100">
         <template slot-scope="scope">
           <el-tag type="success" v-if="scope.row.is_active">正常</el-tag>

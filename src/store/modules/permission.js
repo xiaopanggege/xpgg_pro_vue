@@ -13,6 +13,8 @@ import { deepClone } from '@/utils'
 
 //  这个是判断是route是否有meta.roles属性，如果有看有没有和传递进来的roles匹配，匹配就返回真，
 // 如果最终都没有匹配就返回假，如果没有meta.roles属性则说明这个路由不需要权限控制直接为真运行访问
+// 这里有一个坑，就是route是从后端数据库获取的，里面百分百都带了meta.roles属性。。所以实际上未授
+// 权的用户登陆以后连公共页面也无法访问到得看看怎么做公共页面
 function hasPermission(roles, route) {
   if (route.meta && route.meta.roles) {
     return roles.some(role => route.meta.roles.includes(role))
@@ -93,7 +95,15 @@ const actions = {
         accessedRoutes = asyncRoutes || []
         commit('SET_ROUTES', accessedRoutes)
         resolve(accessedRoutes)
-      } else {
+      }
+      // 这个是我在前端设置的一个游客角色，弄的复杂点，用户第一次注册么有分配角色
+      else if(data.roles[0] == 'abcdefghigklmnopqrstuvwxyz_0987654321'){
+        accessedRoutes = filterAsyncRoutes(asyncRoutes, data.roles)
+        commit('SET_ROUTES', accessedRoutes)
+        resolve(accessedRoutes)
+      }
+      else {
+        // 这里不需要提交用户相关参数是因为后端可以获取token来判断用户是谁或者应该是session
         getRoutes().then(response => {
           let serviceRoutes = deepClone(response.data)
           serviceRoutes = mapRoutes(serviceRoutes)

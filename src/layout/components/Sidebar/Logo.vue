@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      title: '小胖运维系统',
+      title: '运维系统',
       // 如果是网络上面的logo那直接写logo:'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png' 即可
       // 因为是引用静态文件里的必须用require
       logo: require('@/assets/sidebar-logo/sidebar-log.png')

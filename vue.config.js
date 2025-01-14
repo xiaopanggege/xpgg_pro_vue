@@ -10,7 +10,7 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
-const port = 9528 // dev port
+const port = 80 // dev port 9528
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -28,8 +28,9 @@ module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
+    disableHostCheck: true,
     port: port,
-    open: true,
+    open: false,
     overlay: {
       warnings: false,
       errors: true
@@ -42,6 +43,47 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
+        }
+      },
+
+      // cas单点登录跨域请求，后面我页面改成图标点击直接跳转到cas认证页面了，所以这个没用上，留着作为跨域请求的参考，然后用axios请求
+      // 如下这样调用
+      // 添加cas登陆给permission.js里面调用
+      // casLogin({ commit }, ukey) {
+      //   return new Promise((resolve, reject) => {
+      //     // 临时设置一个axios的配置，用来访问cas返回用户名称的接口
+      //     const service = axios.create({
+      //       baseURL: '/cas', // url = base url + request url 这个/cas是在vue.config.js里的proxy设置的
+      //       withCredentials: false // send cookies when cross-domain requests
+      //       // timeout: 5000 // request timeout
+      //     })
+      //     service.get('/decuser.php',{params: {ukey: ukey,}
+      //     }) .then(response => {
+      //       const data = response.data  //内容像这样：jiangxianfu|1629092241|824c65894b7e985516352d9082273f79|172.18.253.20
+      //       const username = data.split('|')[0]  // 获取第一个
+      //       casLogin(username).then(response => {
+      //         const data = response.data
+      //         commit('SET_TOKEN', data.access)
+      //         commit('SET_NAME', username)
+      //         setToken(response.data.access)
+      //         resolve()
+      //       })
+      //         .catch(function (error) {
+      //           console.log(error)
+      //           reject(error)
+      //       })
+      //     }).catch((err)=>{
+      //       console.log(err);
+      //       reject(error)
+      //   })
+          
+      //   })
+      // 注意这样会导致所有访问包括浏览器上面的url如果路径是/cas-logout都会被这个强制代理，我之前就遇到不小心url上面和这个路径配置一直导致一直被代理走找不到原因！！
+      '/cas-logout': {
+        target: 'https://sid.ruijie.com.cn',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/cas-logout': ''  // 确保路径重写正确
         }
       }
     },
